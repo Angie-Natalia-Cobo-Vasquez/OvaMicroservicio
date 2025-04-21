@@ -1,0 +1,59 @@
+### 1. Crear ova - Éxito (Datos válidos)
+POST http://localhost:8080/api/ovas
+Content-Type: application/json
+
+{
+  "nombre": "Programación Avanzada",
+  "descripcion": "Ova de Programacion",
+  "idDocente": 1,
+  "duracionHoras": 60,
+  "modalidad": "Presencial",
+  "cuposDisponibles": 30,
+  "horario": "Lunes y Miércoles 18:00-20:00",
+  "idSemestre": 1,
+  "numeroCreditos": 4
+}
+
+### 2. Crear ova - Error (Datos inválidos)
+POST http://localhost:8080/api/ovas
+Content-Type: application/json
+
+{
+  "nombre": "",
+  "descripcion": "Ova sin nombre",
+  "idDocente": 1,
+  "duracionHoras": -10,
+  "modalidad": "Virtual",
+  "cuposDisponibles": -5,
+  "horario": "",
+  "idSemestre": 1,
+  "numeroCreditos": 0
+}
+
+### 3. Listar todos las ovas
+GET http://localhost:8080/api/ovas
+
+### 4. Obtener ovas por ID - Éxito
+GET http://localhost:8080/api/ovas/1
+
+### 5. Obtener ovas por ID - No encontrado
+GET http://localhost:8080/api/ovas/999
+
+### 6. Actualizar ova - Éxito
+PUT http://localhost:8080/api/ovas/1
+Content-Type: application/json
+
+{
+  "nombre": "Programación Avanzada (Actualizado)",
+  "descripcion": "Ahora incluye Spring Cloud",
+  "idDocente": 2,
+  "duracionHoras": 80,
+  "modalidad": "Híbrido",
+  "cuposDisponibles": 25,
+  "horario": "Martes y Jueves 19:00-21:00",
+  "idSemestre": 1,
+  "numeroCreditos": 5
+}
+
+### 7. Eliminar ova
+DELETE http://localhost:8080/api/ova/1
