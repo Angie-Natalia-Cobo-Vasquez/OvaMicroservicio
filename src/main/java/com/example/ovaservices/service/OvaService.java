@@ -6,6 +6,9 @@ import com.example.ovaservices.exception.ResourceNotFoundException;
 import com.example.ovaservices.model.Ova;
 import com.example.ovaservices.repository.OvaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +48,19 @@ public class OvaService {
         return mapToResponse(ova);
     }
 
+    @Transactional(readOnly = true)
+    public Page<OvaResponse> obtenerOvasPaginados(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Ova> ovaPage = ovaRepository.findAll(pageable);
+        return ovaPage.map(this::mapToResponse);
+    }
+
+
     @Transactional
-    public OvaResponse actualizarOva(Long id, OvaRequest request) {
+    public OvaResponse actualizarOva(OvaRequest request) {
         validarDatosOva(request);
+
+        Long id = request.id();
 
         Ova ova = ovaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ova no encontrado con ID: " + id));
@@ -55,17 +68,17 @@ public class OvaService {
         ova.setNombre(request.nombre());
         ova.setDescripcion(request.descripcion());
         ova.setIdCurso(request.idCurso());
+
         ova = ovaRepository.save(ova);
         return mapToResponse(ova);
     }
 
+
     @Transactional
-    public void eliminarOva(Long id) {
-        if (!ovaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Ova no encontrado con ID: " + id);
-        }
-        ovaRepository.deleteById(id);
+    public void eliminarTodos() {
+        ovaRepository.deleteAll();
     }
+
 
     @Transactional(readOnly = true)
     public List<OvaResponse> listarOvasPorCurso(Long idCurso) {

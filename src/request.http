@@ -1,5 +1,5 @@
 ### 1. Crear ova - Éxito (Datos válidos)
-POST http://localhost:8080/api/ovas
+POST http://localhost:8080/ovas
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### 2. Crear ova - Error (Datos inválidos)
-POST http://localhost:8080/api/ovas
+POST http://localhost:8080/ovas
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### 3. Listar todos las ovas
-GET http://localhost:8080/api/ovas
+GET http://localhost:8080/ovas
 
 ### 4. Obtener ovas por ID - Éxito
 GET http://localhost:8080/api/ovas/1
@@ -56,4 +56,4 @@ Content-Type: application/json
 }
 
 ### 7. Eliminar ova
-DELETE http://localhost:8080/api/ova/1
+DELETE http://localhost:8080/ovas
