@@ -1,0 +1,37 @@
+
+services:
+  ova-service:
+    image:    angiecobo/ova-service:latest
+    container_name: ova-service
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+      - "8181:8081"
+    environment:
+      - DB_USER=postgres
+      - DB_PASS=123456
+      - JPA_DDL=create-drop
+      - DB_HOST=jdbc:postgresql://host.docker.internal:5432/ovasdb
+    networks:
+      - mynetwork
+
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ovasdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
