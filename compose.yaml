@@ -1,37 +1,49 @@
-
 services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: ova-db
+    environment:
+      - POSTGRES_DB=ovasdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - '5432:5432'
+    networks:
+      - red-backend-app
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ovasdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  eureka-server:
+    image: angiecobo/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - red-backend-app
+
   ova-service:
-    image:    angiecobo/ova-service:latest
+    image: angiecobo/ova-service:latest
     container_name: ova-service
     restart: unless-stopped
-    depends_on:
-      - db
     ports:
       - "8080:8080"
-      - "8181:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
-      - DB_USER=postgres
-      - DB_PASS=123456
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/ovasdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
       - JPA_DDL=create-drop
-      - DB_HOST=jdbc:postgresql://host.docker.internal:5432/ovasdb
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
     networks:
-      - mynetwork
-
-  db:
-    image: postgres:latest
-    container_name: db
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: ovasdb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-    volumes:
-      - ./data:/var/lib/postgresql/data
-    networks:
-      - mynetwork
+      - red-backend-app
+    profiles:
+      - app
 
 networks:
-  mynetwork:
+  red-backend-app:
     driver: bridge
